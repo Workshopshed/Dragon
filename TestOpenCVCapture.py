@@ -1,14 +1,15 @@
-import cv2
-import datetime
+import cv2  
+import datetime  
+from subprocess import call  
 
-cap = cv2.VideoCapture(0)
-# Capture single frame
-ret, frame = cap.read()
-cap.release()
+capture = "CaptureInput" + datetime.datetime.now().isoformat().replace(":", "") + ".jpeg"  
+cmdline = "streamer -c /dev/video0 -b 32 -f jpeg -o " + capture  
 
-if ret:
-    newFileName = "CaptureOutput" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"
-    cv2.imwrite(newFileName, frame)
-else:
-    print "Capture failed"
+call(cmdline, shell=True)  
+
+img = cv2.imread(capture)  
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
+newFileName = "CaptureOutput" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"  
+cv2.imwrite(newFileName, gray)  
+
 

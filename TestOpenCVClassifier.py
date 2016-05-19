@@ -6,6 +6,8 @@ import datetime
 
 
 def detect(img_color):
+    start = datetime.datetime.now()
+
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
     detected = 0
@@ -24,7 +26,9 @@ def detect(img_color):
         for (ex, ey, ew, eh) in eyes:
             cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
 
-    print(str(detected) + " people")
+    duration = datetime.datetime.now() - start
+
+    print(str(detected) + " people in " + str(duration))
     return detected
 
 img = cv2.imread('TestPicture.JPG')
