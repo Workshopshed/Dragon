@@ -1,0 +1,3 @@
+The training application is very hungry for memory and used about 2.5GB on my system. It ran one of my CPUs at between 50% and 100%.
+
+Conveniently the training application tells you how long it runs for, so on my first pass it tool 13 minutes for stage one and ...
