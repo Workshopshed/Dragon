@@ -5,7 +5,7 @@ import cv2
 import datetime
 
 def detect(img_color):
-    dclassifier = cv2.CascadeClassifier('DragonClassifier50x50-5.xml')
+    dclassifier = cv2.CascadeClassifier('DragonClassifier50x50-5v2.xml')
 
     detected = 0
     gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
