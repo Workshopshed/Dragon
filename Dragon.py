@@ -41,15 +41,19 @@ def capture():
     return cv2.imread(filename)
 
 
-def detect(img_color):
+def detect(img):
     dclassifier = cv2.CascadeClassifier('DragonClassifier50x50-5v2.xml')
 
     detected = 0
 
-    dragons = dclassifier.detectMultiScale(img_color)
+    dragons = dclassifier.detectMultiScale(img)
     for (x, y, w, h) in dragons:
-        cv2.rectangle(img_color, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         detected += 1
+
+    if dragons > 0:
+        newFileName = "Detected" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"
+        cv2.imwrite(newFileName, img);
 
     print(str(detected) + " dragons")
     return detected
