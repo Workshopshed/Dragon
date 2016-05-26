@@ -2,17 +2,7 @@ The training application is very hungry for memory and used about 2.5GB on my sy
 
 Conveniently the training application tells you how long it runs for, so on my first pass it tool 13 minutes for stage one and ...
 
-
-
-
-
-
-
-
-C:\Users\andy.clark\Documents\My Stuff\Workshop\Dragon\TestData>"C:\Users\andy.c
-lark\Documents\My Stuff\Apps\OpenCV\opencv\build\x64\vc14\bin\opencv_traincascad
-e.exe" -data Cascade -vec Dragons.vec -bg Negative.info -numPos 90 -numNeg 2078
--maxFalseAlarmRate 0.05 -numStages 5 -w 50 -h 50 -mode ALL
+opencv_traincascade.exe -data Cascade -vec Dragons.vec -bg Negative.info -numPos 90 -numNeg 2078 -maxFalseAlarmRate 0.05 -numStages 5 -w 50 -h 50 -mode ALL
 PARAMETERS:
 cascadeDirName: Cascade
 vecFileName: Dragons.vec
