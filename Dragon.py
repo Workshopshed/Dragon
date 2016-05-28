@@ -9,6 +9,7 @@ from libsoc import gpio
 from libsoc import GPIO
 
 
+
 def call_api(url):
     r = StringIO()
     c = pycurl.Curl()
