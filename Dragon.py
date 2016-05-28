@@ -9,7 +9,6 @@ from libsoc import gpio
 from libsoc import GPIO
 
 
-
 def call_api(url):
     r = StringIO()
     c = pycurl.Curl()
@@ -52,9 +51,9 @@ def detect(img):
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         detected += 1
 
-    if dragons > 0:
+    if detected > 0:
         newFileName = "Detected" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"
-        cv2.imwrite(newFileName, img);
+        cv2.imwrite(newFileName, img)
 
     print(str(detected) + " dragons")
     return detected
@@ -72,7 +71,7 @@ def activated():
     gpio_green = gpio.GPIO(GPIO.gpio_id("GPIO-C"), gpio.DIRECTION_OUTPUT)
     gpio_blue = gpio.GPIO(GPIO.gpio_id("GPIO-D"), gpio.DIRECTION_OUTPUT)
 
-    with gpio.request_gpios(gpio_red, gpio_green, gpio_blue):
+    with gpio.request_gpios((gpio_red, gpio_green, gpio_blue)):
         gpio_green.set_low()
         gpio_blue.set_low()
         gpio_blue.set_high()
@@ -83,16 +82,17 @@ def activate_defences():
     gpio_green = gpio.GPIO(GPIO.gpio_id("GPIO-C"), gpio.DIRECTION_OUTPUT)
     gpio_blue = gpio.GPIO(GPIO.gpio_id("GPIO-D"), gpio.DIRECTION_OUTPUT)
 
-    counter = 15;
+    counter = 10;
 
-    with gpio.request_gpios(gpio_red, gpio_green, gpio_blue):
+    with gpio.request_gpios((gpio_red, gpio_green, gpio_blue)):
         gpio_green.set_low()
         gpio_blue.set_low()
-        while --counter > 0:
+        while counter > 0:
             gpio_red.set_high()
             sleep(0.5)
             gpio_red.set_low()
             sleep(0.5)
+	    counter = counter - 1	
 
 
 def deactivate_defences():
@@ -100,8 +100,8 @@ def deactivate_defences():
         gpio_green = gpio.GPIO(GPIO.gpio_id("GPIO-C"), gpio.DIRECTION_OUTPUT)
         gpio_blue = gpio.GPIO(GPIO.gpio_id("GPIO-D"), gpio.DIRECTION_OUTPUT)
 
-        with gpio.request_gpios(gpio_red,gpio_green,gpio_blue):
-            gpio_green.set_high()
+        with gpio.request_gpios((gpio_red,gpio_green,gpio_blue)):
+            gpio_green.set_low()
             gpio_red.set_low()
             gpio_blue.set_low()
 
@@ -119,15 +119,17 @@ def on_exit(sig, func=None):
 def main():
     while True:
         deactivate_defences()
+	sleep(10) # Avoid rapid retriggering
         while not sensor_activated():
             sleep(1)
         activated()
         image = capture()
         dragons = detect(image)
         if dragons > 0:
+            sleep(3)
             notify(dragons,get_key())
             activate_defences()
-        sleep(20) # Avoid rapid retriggering
+        
 
 
 # Run program
