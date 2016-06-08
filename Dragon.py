@@ -1,3 +1,5 @@
+# This is the application for the Dragon Detector
+
 from StringIO import StringIO
 import pycurl
 import signal, sys
