@@ -1,9 +1,12 @@
-# Details of the trainingprocess for the Cascade Classifier in OpenCV
+# Details of the training process for the Cascade Classifier in OpenCV
 
+[Details of the OpenCV code development](https://www.element14.com/community/people/Workshopshed/blog/2016/05/20/dragonboard-410c-opencv)
 
 The training application is very hungry for memory and used about 2.5GB on my system. It ran one of my CPUs at between 50% and 100%.
 
 Conveniently the training application tells you how long it runs for, so on my first pass it tool 13 minutes for stage one and finished in about half an hour
+
+Here's the output from the second run where I had a lot more images and set the false alarm rate much lower.
 
 opencv_traincascade.exe -data Cascade -vec Dragons.vec -bg Negative.info -numPos 90 -numNeg 2078 -maxFalseAlarmRate 0.05 -numStages 5 -w 50 -h 50 -mode ALL
 PARAMETERS:
