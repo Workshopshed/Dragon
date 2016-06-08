@@ -8,6 +8,7 @@ Conveniently the training application tells you how long it runs for, so on my f
 
 Here's the output from the second run where I had a lot more images and set the false alarm rate much lower.
 
+```
 opencv_traincascade.exe -data Cascade -vec Dragons.vec -bg Negative.info -numPos 90 -numNeg 2078 -maxFalseAlarmRate 0.05 -numStages 5 -w 50 -h 50 -mode ALL
 PARAMETERS:
 cascadeDirName: Cascade
@@ -210,3 +211,4 @@ Precalculation time: 12.259
 +----+---------+---------+
 END>
 Training until now has taken 0 days 14 hours 45 minutes 51 seconds.
+```
