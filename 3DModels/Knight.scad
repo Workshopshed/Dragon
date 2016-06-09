@@ -1,3 +1,6 @@
+// Knight Model
+use <SG90.scad>;
+
 module shoe() {
     scale([1,1,1.2])
     difference(){
@@ -42,28 +45,66 @@ module base() {
 }
 
 module shoulder() {
+	size=14;
+	width=23;
     hull() {
-    translate([-20,0,0]) 
+    translate([-width,0,0]) 
     rotate([0,90,0])
-    cylinder(2,r=10,true,$fn=100);
+    cylinder(2,r=size,true,$fn=100);
     translate([0,0,-8]) 
-    cylinder(16,r=10,true,$fn=100);
-    translate([20,0,0]) 
+    cylinder(16,r=size,true,$fn=100);
+    translate([width,0,0]) 
     rotate([0,90,0])
-    cylinder(2,r=10,true,$fn=100);
+    cylinder(2,r=size,true,$fn=100);
     }
 }
 
 module body() {
-    hull() {
-        translate([0,0,45])
-        shoulder();
-        base();
-    }
+	difference() {
+		hull() {
+			translate([0,0,45])
+				shoulder();
+			base();
+		}
+		translate([-27,-20,45.5])
+			cube([55,42,22]);
+		translate([-15.25,-7,23])
+			cube([3,14,34]);
+		translate([-20,-7,28])
+			cube([42,14,24]);
+		translate([-30,0,45.5])
+			rotate([0,90,0])
+				cylinder(30,d=13,true,$fn=100);
+		translate([-12,0,-40])
+			cylinder(50,r=9.25,true,$fn=200);
+		translate([12,0,-40])
+			cylinder(50,r=9.25,true,$fn=200);
+		translate([6.5,-7,-40])
+			cube([11,14,100]);
+
+	}
+}
+
+module body_top() {
+	difference() {
+		hull() {
+			translate([0,0,45])
+				shoulder();
+			base();
+		}
+		translate([-27,-20,-3.5])
+			cube([55,42,49]);
+		translate([-15.25,-7,23])
+			cube([3,14,34]);
+		translate([-20,-7,28])
+			cube([42,14,24]);
+		translate([20,0,45.5])
+			rotate([0,90,0])
+				cylinder(10,d=3,true,$fn=100);
+	}
 }
 
 module head() {
-translate([0,0,55])
     difference() {
     cylinder(32,r=15,r2=14,true,$fn=200);
     //Eye slot
@@ -76,7 +117,7 @@ translate([0,0,55])
 
 module arm() {
     difference() {
-        translate([-22,0,45]) {
+        translate([0,0,45]) {
             sphere(12,true,$fn=200);
             translate([0,0,-23]) {
                 cylinder(23,r=9,r2=11,true,$fn=100);
@@ -89,13 +130,18 @@ module arm() {
                 }
             }
         }
-        translate([-22,-40,0])
+        translate([0,-40,0])
             cube([20,100,100]);
+		translate([-15,0,45.25])
+			rotate([0,90,0])
+				cylinder(20,d=5,true,$fn=100);
+		translate([-20,0,45.25])
+			rotate([0,90,0])
+				cylinder(10,d=8,true,$fn=100);
     }
 }
 module sword() {
-    translate([-22,-35,25]) {
-        union() {
+     union() {
         hull() {
             translate([2.5,0,0]) 
             cylinder(5,r=2,true,$fn=200);
@@ -120,25 +166,80 @@ module sword() {
                 translate([-10,-10,-10])
                     cube([10,20,20]);
             }
-        }
-}
+	}
     
 }
 
+module shield() {
+	translate([30,13,29])
+       difference() {
+           sphere(8,true,$fn=100);
+          translate([0,-10,-10])
+                    cube([10,20,20]);
+	   }
+	intersection() {
+	difference() {
+	cube([60,10,70]);
+	translate([10,15,90])
+		rotate([90,0,0])
+			cylinder(20,r=35,true,$fn=200);
+	translate([50,15,90])
+		rotate([90,0,0])
+			cylinder(20,r=35,true,$fn=200);		
+	}
+	translate([60,15,45])
+		rotate([90,0,0])
+			cylinder(20,r=55,true,$fn=200);
+	translate([-2,15,45])
+		rotate([90,0,0])
+			cylinder(20,r=55,true,$fn=200);
+	translate([30,122,0])
+		doughnut();
+	}
+}
+module doughnut()
+{
+	difference() {
+		cylinder(70,r=119,true,$fn=200);
+		translate([0,0,-5])
+		cylinder(80,r=115,true,$fn=200);
+		
+	}
+}
+
 module knight() {
-    rotate([0,3,0])
-        arm();
-    sword();
-    mirror([1,0,0]) 
-        rotate([0,3,0])
-            arm();
-    head();
+	explode=0; //20*$t;
+	armpos=26.1;
+	translate([-armpos-explode,0,0])
+		rotate([0,3,0])
+			arm();
+	translate([-armpos-(explode/2),-35,24])
+		sword();
+	translate([armpos+explode,0,0])
+		mirror([1,0,0]) 
+			rotate([0,3,0])
+				arm();
+	translate([0,0,57+explode])
+		head();
     body();
-    translate([-12,0,-40])
+	translate([0,0,explode/2])
+	body_top();
+    translate([-12,0,-40-explode])
         leg();
-    translate([12,0,-40])
+    translate([12,0,-40-explode])
         leg();
+	translate([-5,-38,-10])
+		shield();
 }
 
 color([0.8,0.8,0.8]) knight();
 
+
+
+//todo: Add LEDs to head
+//todo: Add shield
+
+/*translate([3,0,40])
+	rotate([0,-90,0])
+		sg90();
+*/
