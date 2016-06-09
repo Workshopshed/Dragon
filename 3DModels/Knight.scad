@@ -52,7 +52,7 @@ module shoulder() {
     rotate([0,90,0])
     cylinder(2,r=size,true,$fn=100);
     translate([0,0,-8]) 
-    cylinder(16,r=size,true,$fn=100);
+    cylinder(16,r=size+3,true,$fn=100);
     translate([width,0,0]) 
     rotate([0,90,0])
     cylinder(2,r=size,true,$fn=100);
@@ -228,7 +228,7 @@ module knight() {
         leg();
     translate([12,0,-40-explode])
         leg();
-	translate([-5,-38,-10])
+	translate([-5+(explode/4),-38-(explode/2),-10])
 		shield();
 }
 
