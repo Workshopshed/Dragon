@@ -86,21 +86,34 @@ module body() {
 }
 
 module body_top() {
+	
 	difference() {
-		hull() {
-			translate([0,0,45])
-				shoulder();
-			base();
-		}
+		union() {
+			hull() {
+				translate([0,0,45])
+					shoulder();
+				base();
+			}
+			translate([0,0,50])
+			cylinder(14,d=22,true,$fn=100);
+		}	
 		translate([-27,-20,-3.5])
 			cube([55,42,49]);
 		translate([-15.25,-7,23])
 			cube([3,14,34]);
 		translate([-20,-7,28])
 			cube([42,14,24]);
+		translate([-30,0,45.5])
+			rotate([0,90,0])
+				cylinder(30,d=13,true,$fn=100);
 		translate([20,0,45.5])
 			rotate([0,90,0])
 				cylinder(10,d=3,true,$fn=100);
+		translate([0,0,45.5])
+			cylinder(30,d=11,true,$fn=100);
+		translate([15,0,45])
+			rotate([0,-55,0])
+				cylinder(18,d=11,true,$fn=100);		
 	}
 }
 
@@ -110,8 +123,11 @@ module head() {
     //Eye slot
     translate([0,-20,5])
         cube([2,10,20]);
-    translate([-6.5,-20,23])
-        cube([15,10,2]);
+    translate([-6.5,-15,23])
+        cube([15,10,3]);
+	//Neck
+	translate([0,0,-5])
+		cylinder(35,d=22,true,$fn=100);
     }
 }
 
@@ -133,11 +149,12 @@ module arm() {
         translate([0,-40,0])
             cube([20,100,100]);
 		translate([-15,0,45.25])
-			rotate([0,90,0])
+			rotate([0,85,0])
 				cylinder(20,d=5,true,$fn=100);
 		translate([-20,0,45.25])
-			rotate([0,90,0])
+			rotate([0,85,0])
 				cylinder(10,d=8,true,$fn=100);
+
     }
 }
 module sword() {
@@ -171,10 +188,16 @@ module sword() {
 }
 
 module shield() {
-	translate([30,13,29])
+	translate([30,15,29])
+	   rotate([0,-5,0])
+	   //Hand + handle
        difference() {
-           sphere(8,true,$fn=100);
-          translate([0,-10,-10])
+		   union() {
+			   sphere(8,true,$fn=100);
+			   rotate([90,0,0])
+				  cylinder(8,r=8,$fn=100);
+		   }	   
+           translate([0,-10,-10])
                     cube([10,20,20]);
 	   }
 	intersection() {
@@ -197,8 +220,7 @@ module shield() {
 		doughnut();
 	}
 }
-module doughnut()
-{
+module doughnut() {
 	difference() {
 		cylinder(70,r=119,true,$fn=200);
 		translate([0,0,-5])
@@ -209,17 +231,17 @@ module doughnut()
 
 module knight() {
 	explode=0; //20*$t;
-	armpos=26.1;
+	armpos=28.1;
 	translate([-armpos-explode,0,0])
-		rotate([0,3,0])
+		rotate([0,5,0])
 			arm();
 	translate([-armpos-(explode/2),-35,24])
 		sword();
 	translate([armpos+explode,0,0])
 		mirror([1,0,0]) 
-			rotate([0,3,0])
+			rotate([0,5,0])
 				arm();
-	translate([0,0,57+explode])
+	translate([0,0,59+explode])
 		head();
     body();
 	translate([0,0,explode/2])
@@ -228,18 +250,14 @@ module knight() {
         leg();
     translate([12,0,-40-explode])
         leg();
-	translate([-5+(explode/4),-38-(explode/2),-10])
+	translate([-4+(explode/4),-41-(explode/2),-10])
 		shield();
 }
 
 color([0.8,0.8,0.8]) knight();
 
-
-
-//todo: Add LEDs to head
-//todo: Add shield
-
-/*translate([3,0,40])
+/* Servo to move arm
+translate([3,0,40])
 	rotate([0,-90,0])
-		sg90();
+		*sg90();
 */
