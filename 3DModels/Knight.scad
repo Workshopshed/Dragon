@@ -127,7 +127,7 @@ module head() {
         cube([15,10,3]);
 	//Neck
 	translate([0,0,-5])
-		cylinder(35,d=22,true,$fn=100);
+		cylinder(35,d=23,true,$fn=100);
     }
 }
 
@@ -193,9 +193,9 @@ module shield() {
 	   //Hand + handle
        difference() {
 		   union() {
-			   sphere(8,true,$fn=100);
+			   sphere(8,true,$fn=200);
 			   rotate([90,0,0])
-				  cylinder(8,r=8,$fn=100);
+				  cylinder(8,r=8,$fn=200);
 		   }	   
            translate([0,-10,-10])
                     cube([10,20,20]);
@@ -205,26 +205,26 @@ module shield() {
 	cube([60,10,70]);
 	translate([10,15,90])
 		rotate([90,0,0])
-			cylinder(20,r=35,true,$fn=200);
+			cylinder(20,r=35,true,$fn=500);
 	translate([50,15,90])
 		rotate([90,0,0])
-			cylinder(20,r=35,true,$fn=200);		
+			cylinder(20,r=35,true,$fn=500);		
 	}
 	translate([60,15,45])
 		rotate([90,0,0])
-			cylinder(20,r=55,true,$fn=200);
+			cylinder(20,r=55,true,$fn=400);
 	translate([-2,15,45])
 		rotate([90,0,0])
-			cylinder(20,r=55,true,$fn=200);
+			cylinder(20,r=55,true,$fn=400);
 	translate([30,122,0])
 		doughnut();
 	}
 }
 module doughnut() {
 	difference() {
-		cylinder(70,r=119,true,$fn=200);
+		cylinder(70,r=119,true,$fn=1000);
 		translate([0,0,-5])
-		cylinder(80,r=115,true,$fn=200);
+		cylinder(80,r=115,true,$fn=1000);
 		
 	}
 }
