@@ -134,6 +134,33 @@ module head() {
     }
 }
 
+module LEDCarrier() {
+difference() {
+		cylinder(25,d=22,true,$fn=100);
+		translate([-15,0,7])
+			cube([30,15,20]);
+		translate([-15,-15,7])
+			cube([30,10,20]);
+		translate([5,2,19])
+			rotate([90,90,0])
+				cylinder(10,d=5.5,true,$fn=80);
+		translate([-5,2,19])
+			rotate([90,90,0])
+				cylinder(10,d=5.5,true,$fn=80);
+		translate([0,0,-1])
+			rotate([0,0,180])
+				halfcylinder(15,8);
+	}
+}
+module halfcylinder(height,radius) {
+	difference() {
+	cylinder(height,r=radius,true,$fn=80);
+	translate([-radius-1,0,-1])
+		cube([(radius*2)+2,radius+2,height+2]);
+	}
+}
+
+
 module arm() {
     difference() {
         translate([0,0,45]) {
@@ -237,27 +264,33 @@ module knight() {
 	armpos=28.1;
 	translate([-armpos-explode,0,0])
 		rotate([0,5,0])
-			arm();
+			color([0.8,0.8,0.8]) arm();
 	translate([-armpos-(explode/2),-35,24])
-		sword();
+		color([0.8,0.8,0.8]) sword();
 	translate([armpos+explode,0,0])
 		mirror([1,0,0]) 
 			rotate([0,5,0])
-				arm();
+				color([0.8,0.8,0.8]) arm();
 	translate([0,0,59+explode])
-		head();
-    body();
+		color([0.8,0.8,0.8]) head();
+    color([0.8,0.8,0.8]) body();
 	translate([0,0,explode/2])
-	body_top();
+	color([0.8,0.8,0.8]) body_top();
     translate([-12,0,-40-explode])
-        leg();
+        color([0.8,0.8,0.8]) leg();
     translate([12,0,-40-explode])
-        leg();
+        color([0.8,0.8,0.8]) leg();
 	translate([-4+(explode/4),-41-(explode/2),-10])
-		shield();
+		color([0.8,0.8,0.8]) shield();
+	translate([0,0,65+explode])	
+		color([0.4,0.4,1]) LEDCarrier();	
 }
 
-color([0.8,0.8,0.8]) knight();
+knight();
+
+
+
+
 
 /* Servo to move arm
 translate([3,0,40])
