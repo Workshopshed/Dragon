@@ -82,8 +82,8 @@ module body() {
 				cylinder(10,d=3,true,$fn=100);
 		translate([12,0,-40])
 			cylinder(50,r=9.25,true,$fn=200);
-		translate([6.5,-7,-40])
-			cube([11,14,100]);
+		translate([12,0,9.8])
+			cylinder(21,r=9.25,r2=6.5,true,$fn=200);
 
 	}
 }
@@ -288,12 +288,8 @@ module knight() {
 
 knight();
 
-
-
-
-
-/* Servo to move arm
+/*
 translate([3,0,40])
 	rotate([0,-90,0])
-		*sg90();
+		sg90();
 */
