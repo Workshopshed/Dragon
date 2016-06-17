@@ -74,7 +74,15 @@ module body() {
 			cube([42,14,24]);
 		translate([-30,0,45.5])
 			rotate([0,90,0])
-				cylinder(30,d=13,true,$fn=100);
+				cylinder(30,d=12.2,true,$fn=100);
+        hull(){
+       	translate([-30,0,39])
+			rotate([0,90,0])
+				cylinder(30,d=5.75,true,$fn=100);
+        translate([-30,0,44])
+			rotate([0,90,0])
+				cylinder(30,d=5.75,true,$fn=100);
+        }
 		translate([-12,0,-40])
 			cylinder(50,r=9.25,true,$fn=200);
 		translate([20,0,45.5])
@@ -108,7 +116,7 @@ module body_top() {
 			cube([42,14,24]);
 		translate([-30,0,45.5])
 			rotate([0,90,0])
-				cylinder(30,d=13,true,$fn=100);
+				cylinder(30,d=12.2,true,$fn=100);
 		translate([20,0,45.5])
 			rotate([0,90,0])
 				cylinder(10,d=3,true,$fn=100);
@@ -288,8 +296,4 @@ module knight() {
 
 knight();
 
-/*
-translate([3,0,40])
-	rotate([0,-90,0])
-		sg90();
-*/
+
