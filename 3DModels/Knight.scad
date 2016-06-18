@@ -23,14 +23,16 @@ module shoe() {
 module leg() {
     difference(){
         union(){
-        cylinder(50,r=6,r2=9,true,$fn=200);
+        cylinder(42,r=6,r2=9,true,$fn=200);
+        translate([0,0,42])
+            cylinder(10,r=9,true,$fn=200);
         translate([0,0,26])     
         sphere(9.5,true,$fn=200);    
         translate([0,-25,0]) 
         shoe();
         }
         translate([0,0,-2]) 
-            cylinder(60,r=4,r2=7,true,$fn=200);
+            cylinder(60,r=4.5,r2=7,true,$fn=200);
     }
 }
 
