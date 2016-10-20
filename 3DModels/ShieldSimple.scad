@@ -23,9 +23,9 @@ module shield() {
 }
 module doughnut() {
 	difference() {
-		cylinder(70,r=119,true,$fn=1000);
+		cylinder(70,r=119,true,$fn=200);
 		translate([0,0,-5])
-		cylinder(80,r=115,true,$fn=1000);
+		cylinder(80,r=115,true,$fn=200);
 		
 	}
 }
