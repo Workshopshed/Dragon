@@ -23,14 +23,16 @@ module shoe() {
 module leg() {
     difference(){
         union(){
-        cylinder(50,r=6,r2=9,true,$fn=200);
+        cylinder(42,r=6,r2=9,true,$fn=200);
+        translate([0,0,42])
+            cylinder(10,r=9,true,$fn=200);
         translate([0,0,26])     
         sphere(9.5,true,$fn=200);    
         translate([0,-25,0]) 
         shoe();
         }
         translate([0,0,-2]) 
-            cylinder(60,r=4,r2=7,true,$fn=200);
+            cylinder(60,r=4.5,r2=7,true,$fn=200);
     }
 }
 
@@ -74,7 +76,15 @@ module body() {
 			cube([42,14,24]);
 		translate([-30,0,45.5])
 			rotate([0,90,0])
-				cylinder(30,d=13,true,$fn=100);
+				cylinder(30,d=12.2,true,$fn=100);
+        hull(){
+       	translate([-30,0,39])
+			rotate([0,90,0])
+				cylinder(30,d=5.75,true,$fn=100);
+        translate([-30,0,44])
+			rotate([0,90,0])
+				cylinder(30,d=5.75,true,$fn=100);
+        }
 		translate([-12,0,-40])
 			cylinder(50,r=9.25,true,$fn=200);
 		translate([20,0,45.5])
@@ -82,8 +92,8 @@ module body() {
 				cylinder(10,d=3,true,$fn=100);
 		translate([12,0,-40])
 			cylinder(50,r=9.25,true,$fn=200);
-		translate([6.5,-7,-40])
-			cube([11,14,100]);
+		translate([12,0,9.8])
+			cylinder(21,r=9.25,r2=6.5,true,$fn=200);
 
 	}
 }
@@ -108,7 +118,7 @@ module body_top() {
 			cube([42,14,24]);
 		translate([-30,0,45.5])
 			rotate([0,90,0])
-				cylinder(30,d=13,true,$fn=100);
+				cylinder(30,d=12.2,true,$fn=100);
 		translate([20,0,45.5])
 			rotate([0,90,0])
 				cylinder(10,d=3,true,$fn=100);
@@ -289,11 +299,3 @@ module knight() {
 knight();
 
 
-
-
-
-/* Servo to move arm
-translate([3,0,40])
-	rotate([0,-90,0])
-		*sg90();
-*/
