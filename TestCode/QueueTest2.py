@@ -3,13 +3,14 @@ from Queue import Queue
 from threading import Thread
 import piconzero as pz
 
+
 # A test to see if we can process through two queues full of timed tasks
 # Ref https://www.troyfawkes.com/learn-python-multithreading-queues-basics/
 #     https://docs.python.org/2/library/queue.html
 
 
 class ServoTask:
-    def __init__(self, angle,delay):
+    def __init__(self, angle, delay):
         self.angle = angle
         self.delay = delay
 
@@ -20,7 +21,7 @@ class ServoTask:
 
 
 class LEDTask:
-    def __init__(self, rgb,delay):
+    def __init__(self, rgb, delay):
         self.rgb = rgb
         self.delay = delay
 
@@ -33,7 +34,7 @@ class LEDTask:
 
 
 class RGB:
-    def __init__(self, red,green,blue):
+    def __init__(self, red, green, blue):
         self.red = red
         self.green = green
         self.blue = blue
@@ -52,21 +53,21 @@ def deactivate_defences():
 
 def activated():
     qServo.put(ServoTask(120, 0.2))
-    qLED.put(LEDTask(RGB(0, 0,50), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
     qLED.put(LEDTask(RGB(0, 0, 0), 0.5))
-    qLED.put(LEDTask(RGB(0, 0,50), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
     qLED.put(LEDTask(RGB(0, 0, 0), 0.5))
-    qLED.put(LEDTask(RGB(0, 0,50), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
 
 
 def activate_defences():
-    qServo.put(ServoTask(30, 0.5))
-    for i in range(30, 120, 1):
-        qServo.put(ServoTask(i, 0.01))
-    qServo.put(ServoTask(30, 0.5))
-    for i in range(30, 120, 1):
-        qServo.put(ServoTask(i, 0.01))
+    # Three sword blows
+    for f in range(1, 4, 1):
+        qServo.put(ServoTask(30, 0.5))
+        for i in range(30, 120, 1):
+            qServo.put(ServoTask(i, 0.01))
 
+    # Todo: Change this to pulsating red
     qLED.put(LEDTask(RGB(10, 5, 2), 2))
     qLED.put(LEDTask(RGB(0, 10, 0), 2))
     qLED.put(LEDTask(RGB(10, 5, 2), 2))
@@ -75,21 +76,21 @@ def activate_defences():
     qLED.put(LEDTask(RGB(0, 10, 0), 2))
 
 
-#Setup
+# Setup
 pz.init()
-pz.setOutputConfig(0, 2)    # set output 0 to Servo
-pz.setOutputConfig(1, 1)   # set output 1 to PWM
-pz.setOutputConfig(2, 1)   # set output 2 to PWM
-pz.setOutputConfig(3, 1)   # set output 3 to PWM
+pz.setOutputConfig(0, 2)  # set output 0 to Servo
+pz.setOutputConfig(1, 1)  # set output 1 to PWM
+pz.setOutputConfig(2, 1)  # set output 2 to PWM
+pz.setOutputConfig(3, 1)  # set output 3 to PWM
 
 qLED = Queue(maxsize=0)
 qServo = Queue(maxsize=0)
 
-workerLED = Thread(target=processq,args=(qLED,))
+workerLED = Thread(target=processq, args=(qLED,))
 workerLED.setDaemon(True)
 workerLED.start()
 
-workerServo = Thread(target=processq,args=(qServo,))
+workerServo = Thread(target=processq, args=(qServo,))
 workerServo.setDaemon(True)
 workerServo.start()
 
@@ -114,5 +115,3 @@ except KeyboardInterrupt:
 
 finally:
     pz.cleanup()
-
-
