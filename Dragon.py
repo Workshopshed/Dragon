@@ -1,5 +1,3 @@
-# This is the application for the Dragon Detector
-
 from StringIO import StringIO
 import pycurl
 import signal, sys
@@ -43,21 +41,19 @@ def capture():
     return cv2.imread(filename)
 
 
-def detect(img_color):
+def detect(img):
     dclassifier = cv2.CascadeClassifier('DragonClassifier50x50-5v2.xml')
 
     detected = 0
 
-    img_grey = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-
-    dragons = dclassifier.detectMultiScale(img_grey)
+    dragons = dclassifier.detectMultiScale(img)
     for (x, y, w, h) in dragons:
-        cv2.rectangle(img_color, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         detected += 1
 
     if detected > 0:
         newFileName = "Detected" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"
-        cv2.imwrite(newFileName, img_color)
+        cv2.imwrite(newFileName, img)
 
     print(str(detected) + " dragons")
     return detected
