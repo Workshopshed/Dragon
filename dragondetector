@@ -1,0 +1,35 @@
+#! /bin/sh
+# /etc/init.d/dragondetector
+# From http://xmodulo.com/how-to-automatically-start-program-on-boot-in-debian.html
+
+# Provides:          dragondetector
+# Required-Start:    $local_fs $network
+# Required-Stop:     $local_fs
+# Short-Description: dragondetector
+# Description:       dragondetector python script to activate knight and sensors
+
+# The following part always gets executed.
+echo "Booting the dragon detector"
+
+# The following part carries out specific functions depending on arguments.
+case "$1" in
+  start)
+	cd /home/linaro/Code  
+	sudo /usr/bin/python /home/linaro/Code/Dragon.py &  
+	echo "Dragon Detector started."  
+
+    ;;
+  stop)
+	pid=`ps -ef | grep '[p]ython /home/linaro/Code/Dragon.py' | awk '{ print $1 }'`  
+	echo $pid  
+	kill $pid  
+	sleep 2  
+	echo "Dragon Detector Killed."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/foobar {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
