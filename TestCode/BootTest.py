@@ -5,8 +5,6 @@
 
 import piconzero as pz, time
 
-lastPix = 0
-numpixels = 8
 
 pz.init()
 pz.setOutputConfig(0, 2)  # set output 0 to Servo

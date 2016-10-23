@@ -64,17 +64,19 @@ def activate_defences():
     # Three sword blows
     for f in range(1, 4, 1):
         qServo.put(ServoTask(30, 0.5))
-        for i in range(30, 120, 1):
+        for i in range(30, 120, 2):
             qServo.put(ServoTask(i, 0.01))
 
-    # Todo: Change this to pulsating red
-    qLED.put(LEDTask(RGB(10, 5, 2), 2))
-    qLED.put(LEDTask(RGB(0, 10, 0), 2))
-    qLED.put(LEDTask(RGB(10, 5, 2), 2))
-    qLED.put(LEDTask(RGB(0, 10, 0), 2))
-    qLED.put(LEDTask(RGB(10, 5, 2), 2))
-    qLED.put(LEDTask(RGB(0, 10, 0), 2))
-
+    greenlim = 30
+    for f in range(1, 8, 1):
+        qLED.put(LEDTask(RGB(80,greenlim, 0), 0.5))
+        for i in range(greenlim, 0, -1):
+                qLED.put(LEDTask(RGB(80, i, 0), 0.01))
+        for i in range(0, greenlim, 1):
+                qLED.put(LEDTask(RGB(80, i, 0), 0.01))
+    #And back to red
+    for i in range(greenlim, 0, -1):
+        qLED.put(LEDTask(RGB(80, i, 0), 0.01))
 
 # Setup
 pz.init()
