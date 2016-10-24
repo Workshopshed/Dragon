@@ -5,8 +5,50 @@ import cv2
 import datetime
 from subprocess import call
 from time import sleep
-from libsoc import gpio
-from libsoc import GPIO
+import piconzero as pz
+from Queue import Queue
+from threading import Thread
+
+
+# Ref https://www.troyfawkes.com/learn-python-multithreading-queues-basics/
+#     https://docs.python.org/2/library/queue.html
+
+class ServoTask:
+    def __init__(self, angle, delay):
+        self.angle = angle
+        self.delay = delay
+
+    def run(self):
+        print self.angle
+        pz.setOutput(0, self.angle)
+        sleep(self.delay)
+
+
+class LEDTask:
+    def __init__(self, rgb, delay):
+        self.rgb = rgb
+        self.delay = delay
+
+    def run(self):
+        print self.rgb.red, self.rgb.green, self.rgb.blue
+        pz.setOutput(1, self.rgb.red)
+        pz.setOutput(2, self.rgb.green)
+        pz.setOutput(3, self.rgb.blue)
+        sleep(self.delay)
+
+
+class RGB:
+    def __init__(self, red, green, blue):
+        self.red = red
+        self.green = green
+        self.blue = blue
+
+
+def processq(q):
+    while True:
+        task = q.get()
+        task.run()
+        q.task_done()
 
 
 def call_api(url):
@@ -28,7 +70,7 @@ def get_key():
     return key
 
 
-def notify(numDragons,key):
+def notify(numDragons, key):
     url = "https://maker.ifttt.com/trigger/DragonDetected/with/key/" + key + "?value1=" + str(numDragons)
     r = call_api(url)
     print r
@@ -60,50 +102,50 @@ def detect(img):
 
 
 def sensor_activated():
-    gpio_in = gpio.GPIO(GPIO.gpio_id("GPIO-A"), gpio.DIRECTION_INPUT)
-    with gpio.request_gpios(gpio_in):
-        in_val = gpio_in.is_high()
-    return in_val
+    return pz.readInput(0)
 
 
-def activated():
-    gpio_red = gpio.GPIO(GPIO.gpio_id("GPIO-B"), gpio.DIRECTION_OUTPUT)
-    gpio_green = gpio.GPIO(GPIO.gpio_id("GPIO-C"), gpio.DIRECTION_OUTPUT)
-    gpio_blue = gpio.GPIO(GPIO.gpio_id("GPIO-D"), gpio.DIRECTION_OUTPUT)
-
-    with gpio.request_gpios((gpio_red, gpio_green, gpio_blue)):
-        gpio_green.set_low()
-        gpio_blue.set_low()
-        gpio_blue.set_high()
-
-
-def activate_defences():
-    gpio_red = gpio.GPIO(GPIO.gpio_id("GPIO-B"), gpio.DIRECTION_OUTPUT)
-    gpio_green = gpio.GPIO(GPIO.gpio_id("GPIO-C"), gpio.DIRECTION_OUTPUT)
-    gpio_blue = gpio.GPIO(GPIO.gpio_id("GPIO-D"), gpio.DIRECTION_OUTPUT)
-
-    counter = 10;
-
-    with gpio.request_gpios((gpio_red, gpio_green, gpio_blue)):
-        gpio_green.set_low()
-        gpio_blue.set_low()
-        while counter > 0:
-            gpio_red.set_high()
-            sleep(0.5)
-            gpio_red.set_low()
-            sleep(0.5)
-	    counter = counter - 1	
+def waitforaction():
+    # Wait till both queues are empty
+    qLED.join()
+    qServo.join()
 
 
 def deactivate_defences():
-        gpio_red = gpio.GPIO(GPIO.gpio_id("GPIO-B"), gpio.DIRECTION_OUTPUT)
-        gpio_green = gpio.GPIO(GPIO.gpio_id("GPIO-C"), gpio.DIRECTION_OUTPUT)
-        gpio_blue = gpio.GPIO(GPIO.gpio_id("GPIO-D"), gpio.DIRECTION_OUTPUT)
+    qLED.put(LEDTask(RGB(0, 50, 0), 0.5))
+    waitforaction()
 
-        with gpio.request_gpios((gpio_red,gpio_green,gpio_blue)):
-            gpio_green.set_low()
-            gpio_red.set_low()
-            gpio_blue.set_low()
+
+def activated():
+    # Flash blue
+    qServo.put(ServoTask(120, 0.2))
+    qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 0), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 0), 0.5))
+    qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
+    waitforaction()
+
+
+def activate_defences():
+    # Three sword blows
+    for f in range(1, 4, 1):
+        qServo.put(ServoTask(30, 0.5))
+        for i in range(30, 120, 2):
+            qServo.put(ServoTask(i, 0.01))
+
+    greenlim = 30
+    for f in range(1, 8, 1):
+        qLED.put(LEDTask(RGB(80, greenlim, 0), 0.5))
+        for i in range(greenlim, 0, -1):
+            qLED.put(LEDTask(RGB(80, i, 0), 0.01))
+        for i in range(0, greenlim, 1):
+            qLED.put(LEDTask(RGB(80, i, 0), 0.01))
+    # And back to red
+    for i in range(greenlim, 0, -1):
+        qLED.put(LEDTask(RGB(80, i, 0), 0.01))
+
+    waitforaction()
 
 
 # Handle exit and kill from OS
@@ -112,24 +154,52 @@ def set_exit_handler(func):
 
 
 def on_exit(sig, func=None):
-    print "exit handler triggered"
+    print "Exiting DragonDetector"
+    pz.cleanup()
     sys.exit(1)
 
 
+def initialise():
+    # Setup
+    pz.init()
+    pz.setOutputConfig(0, 2)  # set output 0 to Servo
+    pz.setOutputConfig(1, 1)  # set output 1 to PWM
+    pz.setOutputConfig(2, 1)  # set output 2 to PWM
+    pz.setOutputConfig(3, 1)  # set output 3 to PWM
+    pz.setInputConfig(0, 0)  # set input 1 to digital
+
+    # Setup Action queues
+    global qLED
+    qLED = Queue(maxsize=0)
+    global qServo
+    qServo = Queue(maxsize=0)
+
+    workerLED = Thread(target=processq, args=(qLED,))
+    workerLED.setDaemon(True)
+    workerLED.start()
+
+    workerServo = Thread(target=processq, args=(qServo,))
+    workerServo.setDaemon(True)
+    workerServo.start()
+
+
 def main():
-    while True:
-        deactivate_defences()
-	sleep(10) # Avoid rapid retriggering
-        while not sensor_activated():
-            sleep(1)
-        activated()
-        image = capture()
-        dragons = detect(image)
-        if dragons > 0:
-            sleep(3)
-            notify(dragons,get_key())
-            activate_defences()
-        
+    try:
+        initialise()
+        while True:
+            deactivate_defences()
+            sleep(10)  # Avoid rapid retriggering
+            while not sensor_activated():
+                sleep(1)
+            activated()
+            image = capture()
+            dragons = detect(image)
+            if dragons > 0:
+                sleep(3)
+                notify(dragons, get_key())
+                activate_defences()
+    except KeyboardInterrupt:
+        print 'Finished'
 
 
 # Run program
