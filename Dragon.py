@@ -19,7 +19,7 @@ class ServoTask:
         self.delay = delay
 
     def run(self):
-        print self.angle
+        # print self.angle
         pz.setOutput(0, self.angle)
         sleep(self.delay)
 
@@ -30,7 +30,7 @@ class LEDTask:
         self.delay = delay
 
     def run(self):
-        print self.rgb.red, self.rgb.green, self.rgb.blue
+        # print self.rgb.red, self.rgb.green, self.rgb.blue
         pz.setOutput(1, self.rgb.red)
         pz.setOutput(2, self.rgb.green)
         pz.setOutput(3, self.rgb.blue)
@@ -98,6 +98,7 @@ def detect(img):
         cv2.imwrite(newFileName, img)
 
     print(str(detected) + " dragons")
+    print ""
     return detected
 
 
@@ -112,12 +113,14 @@ def waitforaction():
 
 
 def deactivate_defences():
+    print "Looking for Dragons"
     qLED.put(LEDTask(RGB(0, 50, 0), 0.5))
     waitforaction()
 
 
 def activated():
     # Flash blue
+    print "Motion detected"
     qServo.put(ServoTask(120, 0.2))
     qLED.put(LEDTask(RGB(0, 0, 50), 0.5))
     qLED.put(LEDTask(RGB(0, 0, 0), 0.5))
@@ -128,6 +131,7 @@ def activated():
 
 
 def activate_defences():
+    print "Dragon detected"
     # Three sword blows
     for f in range(1, 4, 1):
         qServo.put(ServoTask(30, 0.5))
@@ -184,22 +188,24 @@ def initialise():
 
 
 def main():
+    demo = True
     try:
         initialise()
         while True:
             deactivate_defences()
             sleep(10)  # Avoid rapid retriggering
             while not sensor_activated():
-                sleep(1)
+                sleep(0.2)
             activated()
             image = capture()
             dragons = detect(image)
-            if dragons > 0:
-                sleep(3)
-                notify(dragons, get_key())
+            if dragons > 0 or demo:
+                if not demo:
+                    notify(dragons, get_key())
                 activate_defences()
     except KeyboardInterrupt:
-        print 'Finished'
+        print 'Stopping...'
+        on_exit(None)
 
 
 # Run program
