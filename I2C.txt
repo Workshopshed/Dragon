@@ -1,0 +1,57 @@
+i2Cdetect does not work without Sudo
+
+
+List the busses
+
+sudo i2cdetect -l
+
+Probe for devices on bus 0
+
+sudo i2cdetect -r 0
+
+WARNING! This program can confuse your I2C bus, cause data loss and worse!
+I will probe file /dev/i2c-0 using read byte commands.
+I will probe address range 0x03-0x77.
+Continue? [Y/n] Y
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- 22 -- -- -- -- -- -- -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- --
+
+Used the instructions here 
+http://4tronix.co.uk/blog/?p=1224
+
+installed 
+
+sudo apt-get install python-smbus 
+
+Configuration was not needed
+
+
+linaro@linaro-alip:~/piconzero$ sudo python version.py
+Board Type: Picon Zero
+Firmware version: 7
+
+
+
+linaro@linaro-alip:~/piconzero$ sudo python servoTest.py
+Tests the servos by using the arrow keys to control
+Press <space> key to centre
+Press Ctrl-C to end
+
+Up 85
+Up 80
+Up 75
+Up 70
+Up 65
+Up 60
+Up 55
+Up 50
+Up 45
+Up 40
+Up 35
