@@ -3,14 +3,12 @@ import pycurl
 import signal, sys
 import cv2
 from subprocess import call
-from time import sleep
 import piconzero as pz
 from Queue import Queue
 from threading import Thread
-import datetime
-import dropbox
-import os
-import time
+import datetime, time
+import dropbox, os
+
 
 # Ref https://www.troyfawkes.com/learn-python-multithreading-queues-basics/
 #     https://docs.python.org/2/library/queue.html
@@ -25,6 +23,7 @@ class ServoTask:
         pz.setOutput(0, self.angle)
         sleep(self.delay)
 
+
 class LEDTask:
     def __init__(self, rgb, delay):
         self.rgb = rgb
@@ -37,11 +36,13 @@ class LEDTask:
         pz.setOutput(3, self.rgb.blue)
         sleep(self.delay)
 
+
 class RGB:
     def __init__(self, red, green, blue):
         self.red = red
         self.green = green
         self.blue = blue
+
 
 def processq(q):
     while True:
@@ -68,6 +69,7 @@ def get_IFTTTkey():
     f.close()
     return key
 
+
 # Have created a Dropbox App folder with the DropBox Developer console
 # https://www.dropbox.com/developers/apps
 # Get the access token from a file, as created by above console
@@ -82,6 +84,7 @@ def notify(numDragons, key):
     url = "https://maker.ifttt.com/trigger/DragonDetected/with/key/" + key + "?value1=" + str(numDragons)
     r = call_api(url)
     print r
+
 
 # Simplified upload from the updown.py example
 # https://github.com/dropbox/dropbox-sdk-python/blob/master/example/updown.py
@@ -116,9 +119,9 @@ def purge_old_files(daystokeep):
         delta = now - entry.server_modified
         if delta.days > daystokeep:
             files += 1
-            print 'Deleting {} from {}'.format(entry.name,entry.server_modified)
+            print 'Deleting {} from {}'.format(entry.name, entry.server_modified)
             try:
-                dbx.files_delete('/'+entry.name)
+                dbx.files_delete('/' + entry.name)
             except dropbox.exceptions.ApiError as err:
                 print('*** API error', err)
                 return None
@@ -143,13 +146,14 @@ def detect(img):
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         detected += 1
 
+    newfilename = ""
     if detected > 0:
-        newFileName = "Detected" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"
-        cv2.imwrite(newFileName, img)
+        newfilename = "Detected" + datetime.datetime.now().isoformat().replace(":", "") + ".jpg"
+        cv2.imwrite(newfilename, img)
 
     print(str(detected) + " dragons")
     print ""
-    return detected, newFileName
+    return detected, newfilename
 
 
 def sensor_activated():
@@ -236,7 +240,7 @@ def initialise():
     workerServo.setDaemon(True)
     workerServo.start()
 
-    #Initialise dropbox
+    # Initialise dropbox
     global dbx;
     dbx = dropbox.Dropbox(get_dropboxkey())
 
@@ -246,12 +250,12 @@ def main():
         initialise()
         while True:
             deactivate_defences()
-            sleep(10)  # Avoid rapid retriggering
+            time.sleep(10)  # Avoid rapid retriggering
             while not sensor_activated():
-                sleep(0.2)
+                time.sleep(0.2)
             activated()
             image = capture()
-            dragons,outfile = detect(image)
+            dragons, outfile = detect(image)
             if dragons > 0:
                 notify(dragons, get_IFTTTkey())
                 upload(outfile, '/' + outfile, True)
