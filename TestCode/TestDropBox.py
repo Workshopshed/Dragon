@@ -7,7 +7,7 @@ import time
 # https://www.dropbox.com/developers/apps
 
 # Get the access token from a file, as created by above console
-def get_key():
+def get_dropboxkey():
     with open('DropBoxKey.conf', 'r') as f:
         key = f.readline()
     f.close()
@@ -57,6 +57,6 @@ def purge_old_files(daystokeep):
         print 'Deleted {} files'.format(files)
 
 #Test code
-dbx = dropbox.Dropbox(get_key())
+dbx = dropbox.Dropbox(get_dropboxkey())
 purge_old_files (30)
 upload('CaptureOutput2016-05-19T205313.679536.jpg', '/CaptureOutput2016-05-19T205313.679536.jpg', True)
