@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from StringIO import StringIO
 import pycurl
 import signal, sys
@@ -6,7 +8,7 @@ from subprocess import call
 import piconzero as pz
 from Queue import Queue
 from threading import Thread
-import datetime, time
+import datetime,time
 import dropbox, os
 
 
@@ -21,7 +23,7 @@ class ServoTask:
     def run(self):
         # print self.angle
         pz.setOutput(0, self.angle)
-        sleep(self.delay)
+        time.sleep(self.delay)
 
 
 class LEDTask:
@@ -34,7 +36,7 @@ class LEDTask:
         pz.setOutput(1, self.rgb.red)
         pz.setOutput(2, self.rgb.green)
         pz.setOutput(3, self.rgb.blue)
-        sleep(self.delay)
+        time.sleep(self.delay)
 
 
 class RGB:
