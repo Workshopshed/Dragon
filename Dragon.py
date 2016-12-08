@@ -243,7 +243,7 @@ def initialise():
     workerServo.start()
 
     # Initialise dropbox
-    global dbx;
+    global dbx
     dbx = dropbox.Dropbox(get_dropboxkey())
 
 
