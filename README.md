@@ -8,6 +8,8 @@ Here it is in action, click image to see video
 
 [![Demo Video](http://img.youtube.com/vi/9NGkGyWplvQ/0.jpg)](https://www.youtube.com/watch?v=9NGkGyWplvQ)
 
+A short talk on the project https://skillsmatter.com/skillscasts/8225-linuxing-in-london
+
 ## Software Dependencies
 
 Dropbox API - https://www.dropbox.com/developers/documentation/python#install
